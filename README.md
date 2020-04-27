@@ -1,2 +1,2 @@
 # sped-nfsabrasf
-API de comunicação com webservice da abrasf
+API de comunicação com webservice da SMARAPD
