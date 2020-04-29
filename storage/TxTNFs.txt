@@ -1,0 +1,16 @@
+//Info do prestador de serviço
+A|Ccm|Cnpj|Senha|
+//Info do contador de serviço do prestador
+B|Crc|CrcEstado|
+//????????????? Não sei o que é isso
+C|AliquotaSimples|IdSisLegado|
+//Info do serviço
+D|Servico|Situacao|Valor|Base|DescricaoNF|
+//Info do tomador de serviço
+E|Tipo|Cnpj|Email|InscricaoMunicipal|InscricaoEstadual|Razao|Fantasia|Endereco|Numero|Complemento|Bairro|Cep|CodCidade|Fone|Ramal|Fax|
+//Info de Rps
+F|RpsNum|RpsSerie|RpsDia|RpsMes|RpsAno|
+//Se o serviço for prestado em outros municipios
+G|OutroMunicipio|CodOutroMunicipio|
+//Impostos
+H|RetencaoIss|Pis|Cofins|Inss|Irrf|Csll
