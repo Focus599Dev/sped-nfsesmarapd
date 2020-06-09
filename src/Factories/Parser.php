@@ -51,6 +51,9 @@ class Parser
 
         if ($this->make->getXML($this->std)) {
 
+            echo $this->make->getXML($this->std);
+            die;
+
             return $this->make->getXML($this->std);
         }
 
