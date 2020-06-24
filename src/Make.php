@@ -505,9 +505,116 @@ class Make
 
     public function cancelarNota($std)
     {
+        $root = $this->dom->createElement('InfPedidoCancelamento');
+        $this->dom->appendChild($root);
+
+        $IdentificacaoNfse = $this->dom->createElement('IdentificacaoNfse');
+        $root->appendChild($IdentificacaoNfse);
+
+        $this->dom->addChild(
+            $IdentificacaoNfse,
+            "Numero",
+            $std->Numero,
+            true,
+            "Número da NFS-e"
+        );
+
+        $CpfCnpj = $this->dom->createElement('CpfCnpj');
+        $IdentificacaoNfse->appendChild($CpfCnpj);
+
+        $this->dom->addChild(
+            $CpfCnpj,
+            "Cnpj",
+            $std->Cnpj,
+            true,
+            "Número do Cnpj"
+        );
+
+        $this->dom->addChild(
+            $IdentificacaoNfse,
+            "InscricaoMunicipal",
+            $std->InscricaoMunicipal,
+            false,
+            "Inscrição Municipal do prestador do serviço"
+        );
+
+        $this->dom->addChild(
+            $IdentificacaoNfse,
+            "CodigoMunicipio",
+            $std->CodigoMunicipio,
+            true,
+            "Código do município da geração da NFS-e"
+        );
+
+        $this->dom->addChild(
+            $root,
+            "CodigoCancelamento",
+            $std->Numero,
+            true,
+            "Código do cancelamento"
+        );
+
+        $this->xml = $this->dom->saveXML();
+
+        return $this->xml;
     }
 
     public function consultarNota($std)
     {
+        $root = $this->dom->createElement('ConsultarNfseRpsEnvio');
+        $this->dom->appendChild($root);
+
+        $Prestador = $this->dom->createElement('Prestador');
+        $root->appendChild($Prestador);
+
+        $CpfCnpj = $this->dom->createElement('CpfCnpj');
+        $Prestador->appendChild($CpfCnpj);
+
+        $this->dom->addChild(
+            $CpfCnpj,
+            "Cnpj",
+            $std->Cnpj,
+            true,
+            "Número do Cnpj"
+        );
+
+        $this->dom->addChild(
+            $Prestador,
+            "InscricaoMunicipal",
+            $std->Numero,
+            true,
+            "Inscrição Municipal da empresa/pessoa"
+        );
+
+        $IdentificacaoRps = $this->dom->createElement('IdentificacaoRps');
+        $root->appendChild($IdentificacaoRps);
+
+        $this->dom->addChild(
+            $IdentificacaoRps,
+            "Numero",
+            $std->Numero,
+            true,
+            "Número do RPS"
+        );
+
+        $this->dom->addChild(
+            $IdentificacaoRps,
+            "Serie",
+            $std->Numero,
+            true,
+            "Série do RPS"
+        );
+
+        $this->dom->addChild(
+            $IdentificacaoRps,
+            "Tipo",
+            $std->Numero,
+            true,
+            "Tipo do RPS"
+        );
+
+        $this->xml = $this->dom->saveXML();
+
+        return $this->xml;
     }
 }
