@@ -3,6 +3,7 @@
 namespace NFePHP\NFSe\SMARAPD;
 
 use NFePHP\NFSe\SMARAPD\Common\Tools as ToolsBase;
+use NFePHP\NFSe\SMARAPD\Common\Signer;
 use NFePHP\Common\Strings;
 use NFePHP\NFSe\SMARAPD\Make;
 
@@ -17,18 +18,23 @@ class Tools extends ToolsBase
 
         $xml = Strings::clearXmlString($xml);
 
-        $servico = 'GerarNfseRequest';
-
         $this->lastRequest = htmlspecialchars_decode($xml);
 
-        $request = $this->envelopXML($xml, $servico);
+        $request = $this->envelopXMLEnvio($xml);
 
-        $request = $this->envelopSoapXML($request);
+        $request = Signer::sign(
+            $this->certificate,
+            $request,
+            'Rps',
+            'Id',
+            $this->algorithm,
+            $this->canonical
+        );
 
         $response = $this->sendRequest($request, $this->soapUrl);
-        var_dump($response);
+
         $response = $this->removeStuffs($response);
-        var_dump('ae');
+
         return $response;
     }
 

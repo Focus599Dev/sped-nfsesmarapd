@@ -2,6 +2,7 @@
 
 namespace NFePHP\NFSe\SMARAPD\Common;
 
+use NFePHP\Common\Certificate;
 use NFePHP\NFSe\SMARAPD\Soap\Soap;
 use NFePHP\Common\Validator;
 
@@ -16,20 +17,27 @@ class Tools
 
     public $pathSchemas;
 
-    public function __construct($configJson)
+    protected $algorithm = OPENSSL_ALGO_SHA1;
+
+    protected $canonical = [false, false, null, null];
+
+    public function __construct($configJson, Certificate $certificate)
     {
         $this->pathSchemas = realpath(
             __DIR__ . '/../../schemas'
         ) . '/';
 
+        $this->certificate = $certificate;
+
         $this->config = json_decode($configJson);
 
         if ($this->config->tpAmb == '1') {
+
             $this->soapUrl = 'http://201.48.3.165:9083/tbw/services/nfseSOAP?wsdl';
         } else {
+
             $this->soapUrl = 'https://tributacao.smarapd.com.br/tbwhomolog/services/nfseSOAP?wsdl';
         }
-
     }
 
     protected function sendRequest($request, $soapUrl)
@@ -42,28 +50,17 @@ class Tools
         return (string) $response;
     }
 
-    public function envelopXML($xml, $method)
+    public function envelopXMLEnvio($xml)
     {
 
         $xml = trim(preg_replace("/<\?xml.*?\?>/", "", $xml));
 
         $this->xml =
-            '<nfse:' . $method . '>'
+            '<GerarNfseEnvio xmlns="http://www.abrasf.org.br/nfse.xsd">
+                <Rps xmlns="http://www.abrasf.org.br/nfse.xsd">'
             . $xml .
-            '</nfse:' . $method . '>';
-
-        return $this->xml;
-    }
-
-    public function envelopSoapXML($xml)
-    {
-        $this->xml =
-            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:nfse="http://nfse.abrasf.org.br">
-            <soapenv:Header/>
-            <soapenv:Body>'
-            . $xml .
-            '</soapenv:Body>
-            </soapenv:Envelope>';
+            '</Rps>
+            </GerarNfseEnvio>';
 
         return $this->xml;
     }
@@ -88,21 +85,5 @@ class Tools
     public function getLastRequest()
     {
         return $this->lastRequest;
-    }
-
-    protected function isValid($body, $method)
-    {
-        $pathschemes = realpath(__DIR__ . '/../../schemas/') . '/';
-
-        $schema = $pathschemes . $method;
-
-        if (!is_file($schema)) {
-            return true;
-        }
-
-        return Validator::isValid(
-            $body,
-            $schema
-        );
     }
 }
