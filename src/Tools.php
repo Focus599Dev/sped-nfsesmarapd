@@ -31,7 +31,10 @@ class Tools extends ToolsBase
             $this->canonical
         );
 
-        $response = $this->sendRequest($request, $this->soapUrl);
+        // var_dump($request);
+        $this->isValid($this->versao, $request, 'servico_enviar_lote_rps_envio');
+
+        $response = $this->sendRequest($request, $this->soapUrl,$this->certificate);
 
         $response = $this->removeStuffs($response);
 

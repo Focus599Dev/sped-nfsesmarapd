@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.abrasf.org.br/nfse.xsd" xmlns="http://www.abrasf.org.br/nfse.xsd"
+	xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" attributeFormDefault="unqualified"
+	elementFormDefault="qualified">
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#"	schemaLocation="xmldsig-core-schema20020212.xsd" />
+	<xsd:element name="EnviarLoteRpsResposta">
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element name="NumeroLote" type="tsNumeroLote"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="DataRecebimento" type="xsd:dateTime"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="Protocolo" type="tsNumeroProtocolo"
+						minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+				<xsd:element ref="ListaMensagemRetorno" 
+					minOccurs="1" maxOccurs="1" />
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

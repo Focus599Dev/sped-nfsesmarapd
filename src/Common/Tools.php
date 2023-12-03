@@ -21,6 +21,13 @@ class Tools
 
     protected $canonical = [false, false, null, null];
 
+    protected $versao = '2.0.4';
+
+    protected $availableVersions = [
+        '2.0.4' => 'SMARAPD204'
+    ];
+
+
     public function __construct($configJson, Certificate $certificate)
     {
         $this->pathSchemas = realpath(
@@ -36,16 +43,16 @@ class Tools
             $this->soapUrl = 'http://201.48.3.165:9083/tbw/services/nfseSOAP?wsdl';
         } else {
 
-            $this->soapUrl = 'https://tributacao.smarapd.com.br/tbwhomolog/services/nfseSOAP?wsdl';
+            $this->soapUrl = 'http://201.48.3.165:9083/tbhomolog/services/nfseSOAP?wsdl';
         }
     }
 
-    protected function sendRequest($request, $soapUrl)
+    protected function sendRequest($request, $soapUrl,$certificate)
     {
 
         $soap = new Soap;
 
-        $response = $soap->send($request, $soapUrl);
+        $response = $soap->send($request, $soapUrl, $certificate);
 
         return (string) $response;
     }
@@ -85,5 +92,20 @@ class Tools
     public function getLastRequest()
     {
         return $this->lastRequest;
+    }
+
+    protected function isValid($version, $body, $method){
+
+        $schema = $this->pathSchemas.$method."_v$version.xsd";
+
+        if (!is_file($schema)) {
+            return true;
+        }
+
+        return Validator::isValid(
+            $body,
+            $schema
+        );
+
     }
 }
