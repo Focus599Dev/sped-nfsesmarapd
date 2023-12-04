@@ -5,16 +5,16 @@
 	elementFormDefault="qualified">
 
     <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema20020212.xsd" />
-
-	<xsd:element name="EnviarLoteRpsEnvio">
+    
+	<xsd:element name="ConsultarNfseRpsResposta">
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="LoteRps" type="tcLoteRps" 
+			<xsd:choice>
+				<xsd:element ref="CompNfse" 
 					minOccurs="1" maxOccurs="1" />
-				<xsd:element ref="dsig:Signature" 
-					minOccurs="0" maxOccurs="1" />
-			</xsd:sequence>
+				<xsd:element ref="ListaMensagemRetorno" 
+					minOccurs="1" maxOccurs="1" />
+			</xsd:choice>
 		</xsd:complexType>
-	</xsd:element>        
+	</xsd:element>
 
 </xsd:schema>

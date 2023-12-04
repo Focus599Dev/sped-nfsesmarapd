@@ -6,15 +6,15 @@
 
     <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema20020212.xsd" />
 
-	<xsd:element name="EnviarLoteRpsEnvio">
+	<xsd:element name="ConsultarNfseRpsEnvio">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="LoteRps" type="tcLoteRps" 
+				<xsd:element name="IdentificacaoRps" type="tcIdentificacaoRps"
 					minOccurs="1" maxOccurs="1" />
-				<xsd:element ref="dsig:Signature" 
-					minOccurs="0" maxOccurs="1" />
+				<xsd:element name="Prestador" type="tcIdentificacaoPessoaEmpresa"
+					minOccurs="1" maxOccurs="1" />
 			</xsd:sequence>
 		</xsd:complexType>
-	</xsd:element>        
+	</xsd:element>
 
 </xsd:schema>

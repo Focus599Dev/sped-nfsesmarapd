@@ -30,9 +30,12 @@ class Tools
 
     public function __construct($configJson, Certificate $certificate)
     {
+        
+
+        
         $this->pathSchemas = realpath(
             __DIR__ . '/../../schemas'
-        ) . '/';
+        ) . '/'. $this->availableVersions[$this->versao] . '/'; 
 
         $this->certificate = $certificate;
 
@@ -97,7 +100,7 @@ class Tools
     protected function isValid($version, $body, $method){
 
         $schema = $this->pathSchemas.$method."_v$version.xsd";
-
+        var_dump($schema);
         if (!is_file($schema)) {
             return true;
         }
