@@ -66,12 +66,14 @@ class Tools
         $xml = trim(preg_replace("/<\?xml.*?\?>/", "", $xml));
 
         $this->xml =
+            
             '<GerarNfseEnvio xmlns="http://www.abrasf.org.br/nfse.xsd">
                 <Rps xmlns="http://www.abrasf.org.br/nfse.xsd">'
             . $xml .
             '</Rps>
             </GerarNfseEnvio>';
 
+        //var_dump($this->xml);
         return $this->xml;
     }
 
@@ -100,7 +102,7 @@ class Tools
     protected function isValid($version, $body, $method){
 
         $schema = $this->pathSchemas.$method."_v$version.xsd";
-        var_dump($schema);
+ 
         if (!is_file($schema)) {
             return true;
         }

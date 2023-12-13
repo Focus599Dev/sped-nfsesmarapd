@@ -321,7 +321,7 @@ class Make
         $this->dom->addChild(
             $this->Servico,
             "ExigibilidadeISS",
-            $std->CodigoMunicipio,
+            $std->ExigibilidadeISS,
             true,
             "Exigibilidade do ISS"
         );
@@ -330,25 +330,46 @@ class Make
     public function buildCpfCnpjPrestador($std)
     {
 
-        $this->dom->addChild(
-            $this->CpfCnpjPrestador,
-            "Cnpj",
-            $std->Cnpj,
-            true,
-            "Número do Cnpj"
-        );
+        if(strlen($std->Cnpj) < 14){
+
+            $this->dom->addChild(
+                $this->CpfCnpjPrestador,
+                "Cpf",
+                $std->Cpf,
+                true,
+                "Número do Cpf"
+            );
+        }else{
+            $this->dom->addChild(
+                $this->CpfCnpjPrestador,
+                "Cnpj",
+                $std->Cnpj,
+                true,
+                "Número do Cnpj"
+            );
+        }
     }
 
     public function buildCpfCnpjTomador($std)
     {
-
-        $this->dom->addChild(
-            $this->CpfCnpjTomador,
-            "Cnpj",
-            $std->Cnpj,
-            true,
-            "Número do Cnpj"
-        );
+        
+        if(strlen($std->Cnpj) < 14){
+            $this->dom->addChild(
+                $this->CpfCnpjTomador,
+                "Cpf",
+                $std->Cnpj,
+                true,
+                "Número do Cpf"
+            );
+        }else{
+            $this->dom->addChild(
+                $this->CpfCnpjTomador,
+                "Cnpj",
+                $std->Cnpj,
+                true,
+                "Número do Cnpj"
+            );
+        }
     }
 
     public function buildPrestador($std)
@@ -473,7 +494,7 @@ class Make
         $this->dom->addChild(
             $this->InfDeclaracaoPrestacaoServico,
             "Competencia",
-            $std->dataEmissao,
+            $std->Competencia,
             true,
             "Dia, mês e ano da prestação de serviço (AAAAMMDD)"
         );
@@ -497,7 +518,7 @@ class Make
         $this->dom->addChild(
             $this->InfDeclaracaoPrestacaoServico,
             "IncentivoFiscal",
-            $std->RegimeEspecialTributacao,
+            $std->IncentivoFiscal,
             true,
             "Informação se o prestador é incentivador fiscal"
         );

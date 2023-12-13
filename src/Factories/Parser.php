@@ -169,6 +169,7 @@ class Parser
 
     private function nEntity($std)
     {
+     
         $this->Servico = (object) array_merge((array) $this->Servico, (array) $std);
 
         $this->make->buildServico($this->Servico);

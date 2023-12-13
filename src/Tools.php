@@ -4,6 +4,7 @@ namespace NFePHP\NFSe\SMARAPD;
 
 use NFePHP\NFSe\SMARAPD\Common\Tools as ToolsBase;
 use NFePHP\NFSe\SMARAPD\Common\Signer;
+use NFePHP\NFSe\SMARAPD\Factories\Header;
 use NFePHP\Common\Strings;
 use NFePHP\NFSe\SMARAPD\Make;
 
@@ -19,9 +20,9 @@ class Tools extends ToolsBase
         $xml = Strings::clearXmlString($xml);
 
         $this->lastRequest = htmlspecialchars_decode($xml);
-
+        
         $request = $this->envelopXMLEnvio($xml);
-
+        
         $request = Signer::sign(
             $this->certificate,
             $request,
@@ -30,17 +31,35 @@ class Tools extends ToolsBase
             $this->algorithm,
             $this->canonical
         );
+        
+        $this->isValid($this->versao, $request, 'servico_gerar_nfse_envio');
+        
 
-        // var_dump($request);
-        $this->isValid($this->versao, $request, 'servico_enviar_lote_rps_envio');
+        $auxRequest = $request;
+        
+        $servico = 'GerarNfse';
+        $servico .= 'Request';
+        
+        $request = '<nfse:'.$servico.'>';
+        
+        $cabecalho =  Header::get($this->versao);
+        
+        $cabecalho = trim(preg_replace("/<\?xml.*?\?>/", "", $cabecalho));
+        $auxRequest = trim(preg_replace("/<\?xml.*?\?>/", "", $auxRequest));
 
+        $request .= '<nfseCabecMsg>'.($cabecalho).'</nfseCabecMsg>';
+        
+        $request .= '<nfseDadosMsg>' . ($auxRequest) . '</nfseDadosMsg>';
+
+        $request .= '</nfse:'.$servico.'>';
+        
         $response = $this->sendRequest($request, $this->soapUrl,$this->certificate);
-
+        
         $response = $this->removeStuffs($response);
-
+        
         return $response;
     }
-
+    
     public function CancelaNfse($std)
     {
         $make = new Make();

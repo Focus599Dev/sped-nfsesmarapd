@@ -2,8 +2,11 @@
 
 namespace NFePHP\NFSe\SMARAPD\Soap;
 
+
 class Soap
 {
+    protected $prefixes = [1 => 'soapenv', 2 => 'soap', 3 => 'soap12', 4 => 'env' ];
+    
     public function loadCertificate(Certificate $certificate = null)
     {
         $this->isCertificateExpired($certificate);
@@ -47,7 +50,7 @@ class Soap
         curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode( $data ) );
 
         $response = curl_exec($oCurl);
-
+      
         if ($response == ''){
 
            throw SoapException::soapFault('Erro unable load From Curl: ' . " $url ");
@@ -68,9 +71,25 @@ class Soap
             "SOAPAction: ;",
             "Content-length: " . strlen($xml),
         );
+        
+        $namespaces = array(
+            'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"',
+            'xmlns:nfse="http://www.abrasf.org.br/nfse.xsd"'
+        );
+        
+        $xml = trim(preg_replace("/<\?xml.*?\?>/", "", $xml));
+        
+        $envelope = $this->makeEnvelopeSoap(
+            $xml,
+            $namespaces,
+            SOAP_1_2,
+            $headers
+        );
 
+        
+        
         $ch = curl_init();
-
+        
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         // curl_setopt($ch, CURLOPT_IPRESOLVE, CURLOPT_IPRESOLVE_V4);
@@ -82,13 +101,68 @@ class Soap
         // curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
         curl_setopt($ch, CURLOPT_TIMEOUT, 40);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $envelope);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         
         $response = curl_exec($ch);
-        var_dump($xml);
+        
+        var_dump($envelope);
+        var_dump($response);
+
         curl_close($ch);
 
         return $response;
+    }
+
+    private function mountEnvelopString(
+        $envelopPrefix,
+        $envelopAttributes = '',
+        $header = '',
+        $bodyContent = ''
+    ) {
+
+        return sprintf(
+            '<%s:Envelope %s><%s:Body>%s</%s:Body></%s:Envelope>',
+            $envelopPrefix,
+            $envelopAttributes,
+
+            $envelopPrefix,
+            $bodyContent,
+            $envelopPrefix,
+            $envelopPrefix
+        );
+    }
+
+    private function getStringAttributes($namespaces = [])
+    {
+        $envelopeAttributes = '';
+        foreach ($namespaces as $key => $value) {
+            // $value = str_replace('"',"",$value);
+            $envelopeAttributes .=  $value . ' ';
+        }
+        
+        $envelopeAttributes =  substr($envelopeAttributes, 0, -1);
+
+        return $envelopeAttributes;
+    }
+
+    protected function makeEnvelopeSoap(
+        $request,
+        $namespaces,
+        $soapVer = SOAP_1_2,
+        $header = null
+    ) {
+
+        $prefix = $this->prefixes[$soapVer];
+
+        $envelopeAttributes = $this->getStringAttributes($namespaces);
+        
+
+        return $this->mountEnvelopString(
+            $prefix,
+            $envelopeAttributes,
+            $header,
+            $request
+        );
     }
 }
